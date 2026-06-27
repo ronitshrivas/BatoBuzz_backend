@@ -1,0 +1,12 @@
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/bin/Debug/net7.0/BatoBuzz.Shared.deps.json
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/bin/Debug/net7.0/BatoBuzz.Shared.dll
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/bin/Debug/net7.0/BatoBuzz.Shared.pdb
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.csproj.AssemblyReference.cache
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.AssemblyInfoInputs.cache
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.AssemblyInfo.cs
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.csproj.CoreCompileInputs.cache
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.dll
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/refint/BatoBuzz.Shared.dll
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/BatoBuzz.Shared.pdb
+/Users/ronitshrivastav/Projects/BatoBuzz.Backend/shared/BatoBuzz.Shared/obj/Debug/net7.0/ref/BatoBuzz.Shared.dll

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "s9tC/vfRTH4kRfdjvlC7CqxIGVl62UxGuSSkDbqxsGc=",
+  "Source": "BatoBuzz.Gateway",
+  "BasePath": "_content/BatoBuzz.Gateway",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
