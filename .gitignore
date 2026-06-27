@@ -1,6 +1,9 @@
-bin/
-obj/
-*.user
+**/bin/
+**/obj/
 .vs/
+.vscode/
+*.user
+*.suo
 .env
-appsettings.Development.json
+**/appsettings.Development.json
+.DS_Store

@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../buildMultiTargeting/BatoBuzz.Gateway.props" />
-</Project>

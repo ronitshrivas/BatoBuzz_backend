@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="../build/BatoBuzz.Identity.props" />
-</Project>
