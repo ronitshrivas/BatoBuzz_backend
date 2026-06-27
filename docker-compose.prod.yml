@@ -21,6 +21,8 @@ services:
       Jwt__SigningKey: ${JWT_SIGNING_KEY}
       Jwt__AccessTokenMinutes: "30"
       Jwt__RefreshTokenDays: "30"
+    ports:
+      - "5001:8080"
     depends_on:
       - postgres
     restart: unless-stopped
