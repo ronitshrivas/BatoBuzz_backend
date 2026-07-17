@@ -41,7 +41,10 @@ public sealed class RefreshService : IRefreshService
                 new(ClaimTypes.Email, user.Email),
                 new(ClaimTypes.Role, AppRoles.User),
                 new(TokenClaims.AccountType, AppRoles.User),
+                new(TokenClaims.DisplayName, user.DisplayName),
             };
+            if (!string.IsNullOrWhiteSpace(user.PhotoUrl))
+                claims.Add(new Claim(TokenClaims.PhotoUrl, user.PhotoUrl));
             var (access, exp) = _tokens.CreateAccessToken(claims);
             var newRt = NewToken(appUserId: user.Id);
             _db.RefreshTokens.Add(newRt);
@@ -61,7 +64,10 @@ public sealed class RefreshService : IRefreshService
                 new(ClaimTypes.Role, AppRoles.Merchant),
                 new(TokenClaims.AccountType, AppRoles.Merchant),
                 new(TokenClaims.MerchantStatus, m.Status.ToString().ToLowerInvariant()),
+                new(TokenClaims.DisplayName, m.BusinessName),
             };
+            if (!string.IsNullOrWhiteSpace(m.OwnerPhotoUrl))
+                claims.Add(new Claim(TokenClaims.PhotoUrl, m.OwnerPhotoUrl));
             var (access, exp) = _tokens.CreateAccessToken(claims);
             var newRt = NewToken(merchantId: m.Id);
             _db.RefreshTokens.Add(newRt);

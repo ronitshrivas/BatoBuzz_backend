@@ -77,7 +77,10 @@ public sealed class MerchantAuthService : IMerchantAuthService
             new(ClaimTypes.Role, AppRoles.Merchant),
             new(TokenClaims.AccountType, AppRoles.Merchant),
             new(TokenClaims.MerchantStatus, m.Status.ToString().ToLowerInvariant()),
+            new(TokenClaims.DisplayName, m.BusinessName),
         };
+        if (!string.IsNullOrWhiteSpace(m.OwnerPhotoUrl))
+            claims.Add(new Claim(TokenClaims.PhotoUrl, m.OwnerPhotoUrl));
         var (access, accessExp) = _tokens.CreateAccessToken(claims);
 
         var refresh = new RefreshToken

@@ -1,10 +1,13 @@
 ﻿using System.Text.Json;
 using BatoBuzz.Shared.Results;
 
-namespace BatoBuzz.Identity.Middleware;
+namespace BatoBuzz.Feed.Middleware;
 
 public sealed class ExceptionMiddleware
 {
+    private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionMiddleware> _log;
+
     /// MVC serializes responses as camelCase, but JsonSerializer defaults to
     /// PascalCase. Without this, a thrown AppException would come back as
     /// {"Success":false} while every successful response says {"success":true} —
@@ -13,9 +16,6 @@ public sealed class ExceptionMiddleware
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
-
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _log;
 
     public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> log)
         => (_next, _log) = (next, log);

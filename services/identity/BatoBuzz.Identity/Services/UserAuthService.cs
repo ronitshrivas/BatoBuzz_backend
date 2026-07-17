@@ -89,7 +89,10 @@ public sealed class UserAuthService : IUserAuthService
             new(ClaimTypes.Email, user.Email),
             new(ClaimTypes.Role, AppRoles.User),
             new(TokenClaims.AccountType, AppRoles.User),
+            new(TokenClaims.DisplayName, user.DisplayName),
         };
+        if (!string.IsNullOrWhiteSpace(user.PhotoUrl))
+            claims.Add(new Claim(TokenClaims.PhotoUrl, user.PhotoUrl));
         var (access, accessExp) = _tokens.CreateAccessToken(claims);
 
         var refresh = new RefreshToken
