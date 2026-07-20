@@ -27,7 +27,7 @@ services:
     volumes:
       - api_uploads:/app/wwwroot/uploads
     ports:
-      - "8080:8080"
+      - "5001:8080"
     depends_on:
       - postgres
     restart: unless-stopped
