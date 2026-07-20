@@ -19,6 +19,7 @@ services:
       ConnectionStrings__IdentityDb: "Host=postgres;Port=5432;Database=batobuzz_identity;Username=batobuzz;Password=${DB_PASSWORD}"
       ConnectionStrings__FeedDb: "Host=postgres;Port=5432;Database=batobuzz_feed;Username=batobuzz;Password=${DB_PASSWORD}"
       ConnectionStrings__MerchantDb: "Host=postgres;Port=5432;Database=batobuzz_merchant;Username=batobuzz;Password=${DB_PASSWORD}"
+      ConnectionStrings__ServiceProviderDb: "Host=postgres;Port=5432;Database=batobuzz_serviceprovider;Username=batobuzz;Password=${DB_PASSWORD}"
       Jwt__Issuer: "batobuzz.identity"
       Jwt__Audience: "batobuzz.apps"
       Jwt__SigningKey: ${JWT_SIGNING_KEY}

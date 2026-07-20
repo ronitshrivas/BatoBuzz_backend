@@ -16,6 +16,8 @@ using FeedData = BatoBuzz.Feed.Data;
 using FeedServices = BatoBuzz.Feed.Services;
 using MerchantData = BatoBuzz.Merchant.Data;
 using MerchantServices = BatoBuzz.Merchant.Services;
+using ProviderData = BatoBuzz.ServiceProvider.Data;
+using ProviderServices = BatoBuzz.ServiceProvider.Services;
 using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,6 +44,8 @@ builder.Services.AddDbContext<FeedData.FeedDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("FeedDb")));
 builder.Services.AddDbContext<MerchantData.MerchantDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("MerchantDb")));
+builder.Services.AddDbContext<ProviderData.ServiceProviderDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("ServiceProviderDb")));
 
 // ── Identity feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<IdentityServices.IPasswordHasher, IdentityServices.PasswordHasher>();
@@ -62,6 +66,9 @@ builder.Services.AddScoped<FeedServices.ICityService, FeedServices.CityService>(
 builder.Services.AddScoped<MerchantServices.ICurrentActor, MerchantServices.CurrentActor>();
 builder.Services.AddScoped<MerchantServices.IFileStorage, MerchantServices.LocalFileStorage>();
 builder.Services.AddScoped<MerchantServices.IMerchantService, MerchantServices.MerchantService>();
+
+// ── Service Provider feature (reuses Merchant's ICurrentActor + IFileStorage) ──
+builder.Services.AddScoped<ProviderServices.IServiceProviderService, ProviderServices.ServiceProviderService>();
 
 // ── JWT bearer + policies (one auth setup for the whole app) ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -133,6 +140,7 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<IdentityData.IdentityDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<FeedData.FeedDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<MerchantData.MerchantDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<ProviderData.ServiceProviderDbContext>().Database.Migrate();
 }
 
 app.UseSwagger();

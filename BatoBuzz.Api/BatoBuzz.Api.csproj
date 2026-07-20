@@ -24,4 +24,26 @@
     <ProjectReference Include="..\shared\BatoBuzz.Shared\BatoBuzz.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Features\ServiceProvider\" />
+    <None Remove="Features\ServiceProvider\Controllers\" />
+    <None Remove="Features\ServiceProvider\Data\" />
+    <None Remove="Features\ServiceProvider\Dtos\" />
+    <None Remove="Features\ServiceProvider\Entities\" />
+    <None Remove="Features\ServiceProvider\Enums\" />
+    <None Remove="Features\ServiceProvider\Extensions\" />
+    <None Remove="Features\ServiceProvider\Migrations\" />
+    <None Remove="Features\ServiceProvider\Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\ServiceProvider\" />
+    <Folder Include="Features\ServiceProvider\Controllers\" />
+    <Folder Include="Features\ServiceProvider\Data\" />
+    <Folder Include="Features\ServiceProvider\Dtos\" />
+    <Folder Include="Features\ServiceProvider\Entities\" />
+    <Folder Include="Features\ServiceProvider\Enums\" />
+    <Folder Include="Features\ServiceProvider\Extensions\" />
+    <Folder Include="Features\ServiceProvider\Migrations\" />
+    <Folder Include="Features\ServiceProvider\Services\" />
+  </ItemGroup>
 </Project>
