@@ -39,6 +39,8 @@ public static class MappingExtensions
             ReelCaption: p.ReelCaption,
             ReelVideoUrl: p.ReelVideoUrl,
             ReelThumbnailUrl: p.ReelThumbnailUrl,
+            ReelHlsUrl: p.ReelHlsUrl,
+            ReelStatus: p.ReelStatus.ToString().ToLowerInvariant(),
             JobTitle: p.JobTitle,
             CompanyName: p.CompanyName,
             JobLocation: p.JobLocation,

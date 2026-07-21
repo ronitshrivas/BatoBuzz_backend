@@ -61,6 +61,10 @@ builder.Services.AddScoped<FeedServices.ICurrentActor, FeedServices.CurrentActor
 builder.Services.AddScoped<FeedServices.IPostService, FeedServices.PostService>();
 builder.Services.AddScoped<FeedServices.ICommentService, FeedServices.CommentService>();
 builder.Services.AddScoped<FeedServices.ICityService, FeedServices.CityService>();
+builder.Services.AddScoped<FeedServices.IVideoStorage, FeedServices.LocalVideoStorage>();
+builder.Services.AddScoped<FeedServices.IReelTranscoder, FeedServices.FfmpegReelTranscoder>();
+builder.Services.AddSingleton<FeedServices.IReelJobQueue, FeedServices.ReelJobQueue>();
+builder.Services.AddHostedService<FeedServices.ReelTranscodeWorker>();
 
 // ── Merchant feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<MerchantServices.ICurrentActor, MerchantServices.CurrentActor>();

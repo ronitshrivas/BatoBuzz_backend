@@ -49,6 +49,8 @@ public sealed record PostDto(
     string? ReelCaption,
     string? ReelVideoUrl,
     string? ReelThumbnailUrl,
+    string? ReelHlsUrl,
+    string ReelStatus,
 
     // ── Job
     string? JobTitle,

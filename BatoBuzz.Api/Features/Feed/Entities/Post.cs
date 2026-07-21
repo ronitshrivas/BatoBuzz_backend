@@ -44,8 +44,10 @@ public class Post
 
     // ── Reel fields
     public string? ReelCaption { get; set; }
-    public string? ReelVideoUrl { get; set; }
-    public string? ReelThumbnailUrl { get; set; }
+    public string? ReelVideoUrl { get; set; }          // original uploaded MP4 (source)
+    public string? ReelThumbnailUrl { get; set; }       // poster frame
+    public string? ReelHlsUrl { get; set; }             // .m3u8 playlist, set once transcoded
+    public ReelStatus ReelStatus { get; set; } = ReelStatus.None;
 
     // ── Job fields
     public string? JobTitle { get; set; }
