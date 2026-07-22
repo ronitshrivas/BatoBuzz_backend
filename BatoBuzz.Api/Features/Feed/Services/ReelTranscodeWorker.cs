@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BatoBuzz.Feed.Services;
 
-/// Drains the reel queue one job at a time and transcodes off the request
-/// thread. SingleReader + one-at-a-time processing is deliberate: on a 2-core
-/// VM we never want two FFmpeg runs competing with each other and the API.
+
 public sealed class ReelTranscodeWorker : BackgroundService
 {
     private readonly IReelJobQueue _queue;
