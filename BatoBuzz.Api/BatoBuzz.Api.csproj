@@ -34,6 +34,13 @@
     <None Remove="Features\ServiceProvider\Extensions\" />
     <None Remove="Features\ServiceProvider\Migrations\" />
     <None Remove="Features\ServiceProvider\Services\" />
+    <None Remove="Features\Points\" />
+    <None Remove="Features\Points\Controllers\" />
+    <None Remove="Features\Points\Data\" />
+    <None Remove="Features\Points\Dtos\" />
+    <None Remove="Features\Points\Entities\" />
+    <None Remove="Features\Points\Enums\" />
+    <None Remove="Features\Points\Services\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\ServiceProvider\" />
@@ -45,5 +52,15 @@
     <Folder Include="Features\ServiceProvider\Extensions\" />
     <Folder Include="Features\ServiceProvider\Migrations\" />
     <Folder Include="Features\ServiceProvider\Services\" />
+    <Folder Include="Features\Points\" />
+    <Folder Include="Features\Points\Controllers\" />
+    <Folder Include="Features\Points\Data\" />
+    <Folder Include="Features\Points\Dtos\" />
+    <Folder Include="Features\Points\Entities\" />
+    <Folder Include="Features\Points\Enums\" />
+    <Folder Include="Features\Points\Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Features\Points\Migrations\20260726072348_InitialPoints.Designer.cs" />
   </ItemGroup>
 </Project>

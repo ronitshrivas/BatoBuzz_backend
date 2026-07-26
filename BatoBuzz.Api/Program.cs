@@ -18,6 +18,8 @@ using MerchantData = BatoBuzz.Merchant.Data;
 using MerchantServices = BatoBuzz.Merchant.Services;
 using ProviderData = BatoBuzz.ServiceProvider.Data;
 using ProviderServices = BatoBuzz.ServiceProvider.Services;
+using PointsData = BatoBuzz.Points.Data;
+using PointsServices = BatoBuzz.Points.Services;
 using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,6 +48,8 @@ builder.Services.AddDbContext<MerchantData.MerchantDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("MerchantDb")));
 builder.Services.AddDbContext<ProviderData.ServiceProviderDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("ServiceProviderDb")));
+builder.Services.AddDbContext<PointsData.PointsDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("PointsDb")));
 
 // ── Identity feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<IdentityServices.IPasswordHasher, IdentityServices.PasswordHasher>();
@@ -73,6 +77,11 @@ builder.Services.AddScoped<MerchantServices.IMerchantService, MerchantServices.M
 
 // ── Service Provider feature (reuses Merchant's ICurrentActor + IFileStorage) ──
 builder.Services.AddScoped<ProviderServices.IServiceProviderService, ProviderServices.ServiceProviderService>();
+
+// ── Points / awards / leaderboard ─────────────────────────────────────────
+builder.Services.AddScoped<PointsServices.ICurrentUser, PointsServices.CurrentUser>();
+builder.Services.AddScoped<PointsServices.IUserDirectory, PointsServices.IdentityUserDirectory>();
+builder.Services.AddScoped<PointsServices.IPointsService, PointsServices.PointsService>();
 
 // ── JWT bearer + policies (one auth setup for the whole app) ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -145,6 +154,7 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<FeedData.FeedDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<MerchantData.MerchantDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<ProviderData.ServiceProviderDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<PointsData.PointsDbContext>().Database.Migrate();
 }
 
 app.UseSwagger();
