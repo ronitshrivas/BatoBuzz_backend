@@ -41,6 +41,15 @@
     <None Remove="Features\Points\Entities\" />
     <None Remove="Features\Points\Enums\" />
     <None Remove="Features\Points\Services\" />
+    <None Remove="Features\Chat\" />
+    <None Remove="Features\Chat\Controllers\" />
+    <None Remove="Features\Chat\Data\" />
+    <None Remove="Features\Chat\Dtos\" />
+    <None Remove="Features\Chat\Entities\" />
+    <None Remove="Features\Chat\Enums\" />
+    <None Remove="Features\Chat\Hubs\" />
+    <None Remove="Features\Chat\Services\" />
+    <None Remove="Features\Chat\Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\ServiceProvider\" />
@@ -59,6 +68,15 @@
     <Folder Include="Features\Points\Entities\" />
     <Folder Include="Features\Points\Enums\" />
     <Folder Include="Features\Points\Services\" />
+    <Folder Include="Features\Chat\" />
+    <Folder Include="Features\Chat\Controllers\" />
+    <Folder Include="Features\Chat\Data\" />
+    <Folder Include="Features\Chat\Dtos\" />
+    <Folder Include="Features\Chat\Entities\" />
+    <Folder Include="Features\Chat\Enums\" />
+    <Folder Include="Features\Chat\Hubs\" />
+    <Folder Include="Features\Chat\Services\" />
+    <Folder Include="Features\Chat\Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Features\Points\Migrations\20260726072348_InitialPoints.Designer.cs" />

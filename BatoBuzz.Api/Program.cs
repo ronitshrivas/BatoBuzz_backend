@@ -20,26 +20,22 @@ using ProviderData = BatoBuzz.ServiceProvider.Data;
 using ProviderServices = BatoBuzz.ServiceProvider.Services;
 using PointsData = BatoBuzz.Points.Data;
 using PointsServices = BatoBuzz.Points.Services;
+using ChatData = BatoBuzz.Chat.Data;
+using ChatServices = BatoBuzz.Chat.Services;
+using BatoBuzz.Chat.Hubs;
 using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
 var builder = WebApplication.CreateBuilder(args);
 
-// KYC uploads (merchant feature) are written to and served from wwwroot. Pin
-// WebRootPath so the storage service and static-file middleware agree on the
-// folder even in a fresh container where wwwroot doesn't exist yet.
 var webRootPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
 Directory.CreateDirectory(Path.Combine(webRootPath, "uploads"));
 builder.Environment.WebRootPath = webRootPath;
 
-// ── Config ────────────────────────────────────────────────────────────────
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.Configure<GoogleAuthOptions>(builder.Configuration.GetSection(GoogleAuthOptions.SectionName));
 var jwt = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()!;
 
-// ── Databases (separate DB per feature, one app) ───────────────────────────
-// Keeping three DbContexts on three databases preserves clean data boundaries:
-// features never share tables, and splitting back into services later stays
-// easy. They're all reached through this one process.
+
 builder.Services.AddDbContext<IdentityData.IdentityDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("IdentityDb")));
 builder.Services.AddDbContext<FeedData.FeedDbContext>(o =>
@@ -50,6 +46,8 @@ builder.Services.AddDbContext<ProviderData.ServiceProviderDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("ServiceProviderDb")));
 builder.Services.AddDbContext<PointsData.PointsDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("PointsDb")));
+builder.Services.AddDbContext<ChatData.ChatDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("ChatDb")));
 
 // ── Identity feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<IdentityServices.IPasswordHasher, IdentityServices.PasswordHasher>();
@@ -83,6 +81,13 @@ builder.Services.AddScoped<PointsServices.ICurrentUser, PointsServices.CurrentUs
 builder.Services.AddScoped<PointsServices.IUserDirectory, PointsServices.IdentityUserDirectory>();
 builder.Services.AddScoped<PointsServices.IPointsService, PointsServices.PointsService>();
 
+// ── Chat (SignalR real-time) ──────────────────────────────────────────────
+builder.Services.AddScoped<ChatServices.IChatActor, ChatServices.ChatActor>();
+builder.Services.AddScoped<ChatServices.IChatDirectory, ChatServices.ChatDirectory>();
+builder.Services.AddScoped<ChatServices.IThreadAccessGuard, ChatServices.ThreadAccessGuard>();
+builder.Services.AddScoped<ChatServices.IChatMediaStorage, ChatServices.LocalChatMediaStorage>();
+builder.Services.AddScoped<ChatServices.IChatService, ChatServices.ChatService>();
+
 // ── JWT bearer + policies (one auth setup for the whole app) ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o =>
@@ -98,6 +103,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SigningKey)),
             ClockSkew = TimeSpan.FromSeconds(30),
         };
+
+        // WebSockets can't send an Authorization header, so SignalR passes the
+        // JWT as ?access_token=... on the hub URL. Pull it from there for /hubs.
+        o.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = ctx =>
+            {
+                var accessToken = ctx.Request.Query["access_token"];
+                var path = ctx.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                    ctx.Token = accessToken;
+                return Task.CompletedTask;
+            },
+        };
     });
 
 builder.Services.AddAuthorizationBuilder()
@@ -107,6 +126,8 @@ builder.Services.AddAuthorizationBuilder()
 
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddSignalR();
 
 // Model-binding failures share the ApiResponse envelope, one shape everywhere.
 builder.Services.Configure<ApiBehaviorOptions>(o =>
@@ -155,6 +176,7 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<MerchantData.MerchantDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<ProviderData.ServiceProviderDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<PointsData.PointsDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<ChatData.ChatDbContext>().Database.Migrate();
 }
 
 app.UseSwagger();
@@ -165,6 +187,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/hubs/chat");
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", service = "batobuzz-api" }));
 
 app.Run();
