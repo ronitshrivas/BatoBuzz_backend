@@ -9,6 +9,8 @@ public class MerchantDbContext : DbContext
     public MerchantDbContext(DbContextOptions<MerchantDbContext> options) : base(options) { }
 
     public DbSet<MerchantProfile> Merchants => Set<MerchantProfile>();
+    public DbSet<MerchantRating> MerchantRatings => Set<MerchantRating>();
+    public DbSet<MerchantVote> MerchantVotes => Set<MerchantVote>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -30,6 +32,19 @@ public class MerchantDbContext : DbContext
             e.HasIndex(x => x.Phone).IsUnique();
             e.HasIndex(x => x.Status);
             e.HasIndex(x => new { x.CityId, x.Status });
+        });
+
+        b.Entity<MerchantRating>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasIndex(x => new { x.MerchantId, x.UserId }).IsUnique();
+            e.HasIndex(x => x.MerchantId);
+        });
+
+        b.Entity<MerchantVote>(e =>
+        {
+            e.HasKey(x => x.UserId);          // one vote per user, ever
+            e.HasIndex(x => x.MerchantId);    // for counting a merchant's votes
         });
 
         ApplyUtcDateTimeConverter(b);

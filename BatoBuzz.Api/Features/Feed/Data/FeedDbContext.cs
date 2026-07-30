@@ -14,6 +14,7 @@ public class FeedDbContext : DbContext
     public DbSet<PostComment> PostComments => Set<PostComment>();
     public DbSet<PostView> PostViews => Set<PostView>();
     public DbSet<PostReport> PostReports => Set<PostReport>();
+    public DbSet<PostFavorite> PostFavorites => Set<PostFavorite>();
     public DbSet<City> Cities => Set<City>();
 
     protected override void OnModelCreating(ModelBuilder b)
@@ -97,6 +98,15 @@ public class FeedDbContext : DbContext
             e.Property(x => x.Id).HasMaxLength(64);
             e.Property(x => x.Name).HasMaxLength(120).IsRequired();
             e.HasIndex(x => x.Name);
+        });
+
+        b.Entity<PostFavorite>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasOne(x => x.Post).WithMany().HasForeignKey(x => x.PostId)
+             .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(x => new { x.UserId, x.PostId }).IsUnique();
+            e.HasIndex(x => new { x.UserId, x.SavedAt });
         });
 
         ApplyUtcDateTimeConverter(b);

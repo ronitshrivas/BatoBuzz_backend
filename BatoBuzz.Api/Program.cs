@@ -27,15 +27,22 @@ using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
 var builder = WebApplication.CreateBuilder(args);
 
+// KYC uploads (merchant feature) are written to and served from wwwroot. Pin
+// WebRootPath so the storage service and static-file middleware agree on the
+// folder even in a fresh container where wwwroot doesn't exist yet.
 var webRootPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
 Directory.CreateDirectory(Path.Combine(webRootPath, "uploads"));
 builder.Environment.WebRootPath = webRootPath;
 
+// ── Config ────────────────────────────────────────────────────────────────
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.Configure<GoogleAuthOptions>(builder.Configuration.GetSection(GoogleAuthOptions.SectionName));
 var jwt = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()!;
 
-
+// ── Databases (separate DB per feature, one app) ───────────────────────────
+// Keeping three DbContexts on three databases preserves clean data boundaries:
+// features never share tables, and splitting back into services later stays
+// easy. They're all reached through this one process.
 builder.Services.AddDbContext<IdentityData.IdentityDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("IdentityDb")));
 builder.Services.AddDbContext<FeedData.FeedDbContext>(o =>
@@ -64,6 +71,7 @@ builder.Services.AddScoped<FeedServices.IPostService, FeedServices.PostService>(
 builder.Services.AddScoped<FeedServices.ICommentService, FeedServices.CommentService>();
 builder.Services.AddScoped<FeedServices.ICityService, FeedServices.CityService>();
 builder.Services.AddScoped<FeedServices.IVideoStorage, FeedServices.LocalVideoStorage>();
+builder.Services.AddScoped<FeedServices.IFavoriteService, FeedServices.FavoriteService>();
 builder.Services.AddScoped<FeedServices.IReelTranscoder, FeedServices.FfmpegReelTranscoder>();
 builder.Services.AddSingleton<FeedServices.IReelJobQueue, FeedServices.ReelJobQueue>();
 builder.Services.AddHostedService<FeedServices.ReelTranscodeWorker>();
@@ -72,6 +80,7 @@ builder.Services.AddHostedService<FeedServices.ReelTranscodeWorker>();
 builder.Services.AddScoped<MerchantServices.ICurrentActor, MerchantServices.CurrentActor>();
 builder.Services.AddScoped<MerchantServices.IFileStorage, MerchantServices.LocalFileStorage>();
 builder.Services.AddScoped<MerchantServices.IMerchantService, MerchantServices.MerchantService>();
+builder.Services.AddScoped<MerchantServices.IRatingVoteService, MerchantServices.RatingVoteService>();
 
 // ── Service Provider feature (reuses Merchant's ICurrentActor + IFileStorage) ──
 builder.Services.AddScoped<ProviderServices.IServiceProviderService, ProviderServices.ServiceProviderService>();
