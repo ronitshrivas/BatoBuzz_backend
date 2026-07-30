@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using BatoBuzz.Merchant.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BatoBuzz.Merchant.Migrations
+namespace BatoBuzz.Api.Features.Merchant.Migrations
 {
     [DbContext(typeof(MerchantDbContext))]
-    partial class MerchantDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260730114404_AddRatingsVotes")]
+    partial class AddRatingsVotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
