@@ -15,6 +15,7 @@ public class FeedDbContext : DbContext
     public DbSet<PostView> PostViews => Set<PostView>();
     public DbSet<PostReport> PostReports => Set<PostReport>();
     public DbSet<PostFavorite> PostFavorites => Set<PostFavorite>();
+    public DbSet<JobApplication> JobApplications => Set<JobApplication>();
     public DbSet<City> Cities => Set<City>();
 
     protected override void OnModelCreating(ModelBuilder b)
@@ -107,6 +108,22 @@ public class FeedDbContext : DbContext
              .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(x => new { x.UserId, x.PostId }).IsUnique();
             e.HasIndex(x => new { x.UserId, x.SavedAt });
+        });
+
+        b.Entity<JobApplication>(e =>
+        {
+            e.HasKey(x => x.Id);
+            e.HasOne(x => x.Post).WithMany().HasForeignKey(x => x.PostId)
+             .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(x => new { x.PostId, x.UserId }).IsUnique();   // one application per user per job
+            e.HasIndex(x => new { x.UserId, x.AppliedAt });           // "my applications" newest first
+            e.HasIndex(x => new { x.MerchantId, x.AppliedAt });       // merchant's applicant feed
+            e.HasIndex(x => new { x.PostId, x.AppliedAt });           // applicants for one vacancy
+            e.Property(x => x.ApplicantName).HasMaxLength(200);
+            e.Property(x => x.ApplicantPhone).HasMaxLength(40);
+            e.Property(x => x.ApplicantEmail).HasMaxLength(200);
+            e.Property(x => x.JobTitle).HasMaxLength(200);
+            e.Property(x => x.CoverNote).HasMaxLength(2000);
         });
 
         ApplyUtcDateTimeConverter(b);

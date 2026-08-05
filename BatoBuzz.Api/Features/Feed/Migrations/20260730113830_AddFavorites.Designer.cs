@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BatoBuzz.Api.Features.Feed.Migrations
+namespace BatoBuzz.Feed.Migrations
 {
     [DbContext(typeof(FeedDbContext))]
     [Migration("20260730113830_AddFavorites")]

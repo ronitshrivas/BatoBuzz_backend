@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BatoBuzz.Api.Features.Feed.Migrations
+namespace BatoBuzz.Feed.Migrations
 {
     /// <inheritdoc />
     public partial class AddReelHls : Migration

@@ -72,6 +72,8 @@ builder.Services.AddScoped<FeedServices.ICommentService, FeedServices.CommentSer
 builder.Services.AddScoped<FeedServices.ICityService, FeedServices.CityService>();
 builder.Services.AddScoped<FeedServices.IVideoStorage, FeedServices.LocalVideoStorage>();
 builder.Services.AddScoped<FeedServices.IFavoriteService, FeedServices.FavoriteService>();
+builder.Services.AddScoped<FeedServices.IResumeStorage, FeedServices.LocalResumeStorage>();
+builder.Services.AddScoped<FeedServices.IJobApplicationService, FeedServices.JobApplicationService>();
 builder.Services.AddScoped<FeedServices.IReelTranscoder, FeedServices.FfmpegReelTranscoder>();
 builder.Services.AddSingleton<FeedServices.IReelJobQueue, FeedServices.ReelJobQueue>();
 builder.Services.AddHostedService<FeedServices.ReelTranscodeWorker>();
