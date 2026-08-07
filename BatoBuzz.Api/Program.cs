@@ -22,6 +22,10 @@ using PointsData = BatoBuzz.Points.Data;
 using PointsServices = BatoBuzz.Points.Services;
 using ChatData = BatoBuzz.Chat.Data;
 using ChatServices = BatoBuzz.Chat.Services;
+using NotificationsData = BatoBuzz.Notifications.Data;
+using NotificationsServices = BatoBuzz.Notifications.Services;
+using AwardsData = BatoBuzz.Awards.Data;
+using AwardsServices = BatoBuzz.Awards.Services;
 using BatoBuzz.Chat.Hubs;
 using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
@@ -55,6 +59,10 @@ builder.Services.AddDbContext<PointsData.PointsDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("PointsDb")));
 builder.Services.AddDbContext<ChatData.ChatDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("ChatDb")));
+builder.Services.AddDbContext<NotificationsData.NotificationsDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("NotificationsDb")));
+builder.Services.AddDbContext<AwardsData.AwardsDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("AwardsDb")));
 
 // ── Identity feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<IdentityServices.IPasswordHasher, IdentityServices.PasswordHasher>();
@@ -91,6 +99,7 @@ builder.Services.AddScoped<ProviderServices.IServiceProviderService, ProviderSer
 builder.Services.AddScoped<PointsServices.ICurrentUser, PointsServices.CurrentUser>();
 builder.Services.AddScoped<PointsServices.IUserDirectory, PointsServices.IdentityUserDirectory>();
 builder.Services.AddScoped<PointsServices.IPointsService, PointsServices.PointsService>();
+builder.Services.AddScoped<PointsServices.IScanRewardService, PointsServices.ScanRewardService>();
 
 // ── Chat (SignalR real-time) ──────────────────────────────────────────────
 builder.Services.AddScoped<ChatServices.IChatActor, ChatServices.ChatActor>();
@@ -98,6 +107,12 @@ builder.Services.AddScoped<ChatServices.IChatDirectory, ChatServices.ChatDirecto
 builder.Services.AddScoped<ChatServices.IThreadAccessGuard, ChatServices.ThreadAccessGuard>();
 builder.Services.AddScoped<ChatServices.IChatMediaStorage, ChatServices.LocalChatMediaStorage>();
 builder.Services.AddScoped<ChatServices.IChatService, ChatServices.ChatService>();
+
+// ── Notifications + FCM tokens ────────────────────────────────────────────
+builder.Services.AddScoped<NotificationsServices.INotificationService, NotificationsServices.NotificationService>();
+
+// ── Awards (participation + voting) ───────────────────────────────────────
+builder.Services.AddScoped<AwardsServices.IAwardService, AwardsServices.AwardService>();
 
 // ── JWT bearer + policies (one auth setup for the whole app) ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -188,6 +203,8 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<ProviderData.ServiceProviderDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<PointsData.PointsDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<ChatData.ChatDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<NotificationsData.NotificationsDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<AwardsData.AwardsDbContext>().Database.Migrate();
 }
 
 app.UseSwagger();
