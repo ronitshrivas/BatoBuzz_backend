@@ -26,6 +26,8 @@ using NotificationsData = BatoBuzz.Notifications.Data;
 using NotificationsServices = BatoBuzz.Notifications.Services;
 using AwardsData = BatoBuzz.Awards.Data;
 using AwardsServices = BatoBuzz.Awards.Services;
+using AdminData = BatoBuzz.Admin.Data;
+using AdminServices = BatoBuzz.Admin.Services;
 using BatoBuzz.Chat.Hubs;
 using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
@@ -63,6 +65,8 @@ builder.Services.AddDbContext<NotificationsData.NotificationsDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("NotificationsDb")));
 builder.Services.AddDbContext<AwardsData.AwardsDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("AwardsDb")));
+builder.Services.AddDbContext<AdminData.AdminDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("AdminDb")));
 
 // ── Identity feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<IdentityServices.IPasswordHasher, IdentityServices.PasswordHasher>();
@@ -113,6 +117,14 @@ builder.Services.AddScoped<NotificationsServices.INotificationService, Notificat
 
 // ── Awards (participation + voting) ───────────────────────────────────────
 builder.Services.AddScoped<AwardsServices.IAwardService, AwardsServices.AwardService>();
+
+// ── Super-admin ─────────────────────────────────────────────────────────────
+builder.Services.AddScoped<AdminServices.IAdminAudit, AdminServices.AdminAudit>();
+builder.Services.AddScoped<AdminServices.IAdminManagementService, AdminServices.AdminManagementService>();
+builder.Services.AddScoped<AdminServices.IAdminModerationService, AdminServices.AdminModerationService>();
+builder.Services.AddScoped<AdminServices.IAdminPointsService, AdminServices.AdminPointsService>();
+builder.Services.AddScoped<AdminServices.IAdminBroadcastService, AdminServices.AdminBroadcastService>();
+builder.Services.AddScoped<AdminServices.IAdminAuditReader, AdminServices.AdminAuditReader>();
 
 // ── JWT bearer + policies (one auth setup for the whole app) ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -205,6 +217,7 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<ChatData.ChatDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<NotificationsData.NotificationsDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<AwardsData.AwardsDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<AdminData.AdminDbContext>().Database.Migrate();
 }
 
 app.UseSwagger();

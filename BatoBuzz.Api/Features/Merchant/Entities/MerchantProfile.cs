@@ -45,6 +45,9 @@ public class MerchantProfile
     public string? RejectionReason { get; set; }
     public DateTime? ReviewedAt { get; set; }
 
+    public bool IsSuspended { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? AdminNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 using BatoBuzz.Identity.Data;
 using BatoBuzz.Identity.Dtos.Auth;
 using BatoBuzz.Identity.Dtos.User;
@@ -15,10 +16,14 @@ public sealed class UserAuthService : IUserAuthService
     private readonly IPasswordHasher _hasher;
     private readonly ITokenService _tokens;
     private readonly IGoogleAuthValidator _google;
+    private readonly string[] _superAdminEmails;
 
     public UserAuthService(IdentityDbContext db, IPasswordHasher hasher,
-        ITokenService tokens, IGoogleAuthValidator google)
-        => (_db, _hasher, _tokens, _google) = (db, hasher, tokens, google);
+        ITokenService tokens, IGoogleAuthValidator google, IConfiguration config)
+    {
+        (_db, _hasher, _tokens, _google) = (db, hasher, tokens, google);
+        _superAdminEmails = config.GetSection("SuperAdmin:Emails").Get<string[]>() ?? Array.Empty<string>();
+    }
 
     public async Task<AuthResponse> RegisterAsync(UserRegisterRequest req, CancellationToken ct)
     {
@@ -93,6 +98,15 @@ public sealed class UserAuthService : IUserAuthService
         };
         if (!string.IsNullOrWhiteSpace(user.PhotoUrl))
             claims.Add(new Claim(TokenClaims.PhotoUrl, user.PhotoUrl));
+
+        // Bootstrap super-admins from a configured allowlist of emails. This is
+        // how an account gains the superadmin (and admin) role without a
+        // chicken-and-egg problem: put the owner's email in SuperAdmin:Emails.
+        if (_superAdminEmails.Contains(user.Email, StringComparer.OrdinalIgnoreCase))
+        {
+            claims.Add(new Claim(ClaimTypes.Role, AppRoles.Admin));
+            claims.Add(new Claim(ClaimTypes.Role, AppRoles.SuperAdmin));
+        }
         var (access, accessExp) = _tokens.CreateAccessToken(claims);
 
         var refresh = new RefreshToken

@@ -64,6 +64,13 @@
     <None Remove="Features\Awards\Data\" />
     <None Remove="Features\Awards\Services\" />
     <None Remove="Features\Awards\Controllers\" />
+    <None Remove="Features\Admin\" />
+    <None Remove="Features\Admin\Controllers\" />
+    <None Remove="Features\Admin\Data\" />
+    <None Remove="Features\Admin\Dtos\" />
+    <None Remove="Features\Admin\Entities\" />
+    <None Remove="Features\Admin\Services\" />
+    <None Remove="Features\Admin\Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\ServiceProvider\" />
@@ -105,6 +112,13 @@
     <Folder Include="Features\Awards\Data\" />
     <Folder Include="Features\Awards\Services\" />
     <Folder Include="Features\Awards\Controllers\" />
+    <Folder Include="Features\Admin\" />
+    <Folder Include="Features\Admin\Controllers\" />
+    <Folder Include="Features\Admin\Data\" />
+    <Folder Include="Features\Admin\Dtos\" />
+    <Folder Include="Features\Admin\Entities\" />
+    <Folder Include="Features\Admin\Services\" />
+    <Folder Include="Features\Admin\Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Features\Points\Migrations\20260726072348_InitialPoints.Designer.cs" />

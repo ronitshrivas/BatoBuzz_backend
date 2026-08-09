@@ -17,6 +17,9 @@ public class MerchantAccount
     // The login gate: merchant cannot enter the app until Approved.
     public MerchantStatus Status { get; set; } = MerchantStatus.Pending;
 
+    public bool IsSuspended { get; set; }
+    public bool IsDeleted { get; set; }
+    public string? AdminNote { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public List<RefreshToken> RefreshTokens { get; set; } = new();

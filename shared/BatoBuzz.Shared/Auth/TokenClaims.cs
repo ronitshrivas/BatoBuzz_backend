@@ -17,6 +17,7 @@ public static class AppRoles
     public const string User = "user";
     public const string Merchant = "merchant";
     public const string Admin = "admin";
+    public const string SuperAdmin = "superadmin";
 }
 
 public static class AppPolicies
