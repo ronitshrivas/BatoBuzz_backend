@@ -28,6 +28,13 @@ using AwardsData = BatoBuzz.Awards.Data;
 using AwardsServices = BatoBuzz.Awards.Services;
 using AdminData = BatoBuzz.Admin.Data;
 using AdminServices = BatoBuzz.Admin.Services;
+using ReservationsData = BatoBuzz.Reservations.Data;
+using ReservationsServices = BatoBuzz.Reservations.Services;
+using FollowData = BatoBuzz.Follow.Data;
+using FollowServices = BatoBuzz.Follow.Services;
+using PostInterestData = BatoBuzz.PostInterest.Data;
+using PostInterestServices = BatoBuzz.PostInterest.Services;
+using UserActivityServices = BatoBuzz.UserActivity.Services;
 using BatoBuzz.Chat.Hubs;
 using BatoBuzz.Identity.Services;  // for GoogleAuthOptions
 
@@ -67,6 +74,12 @@ builder.Services.AddDbContext<AwardsData.AwardsDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("AwardsDb")));
 builder.Services.AddDbContext<AdminData.AdminDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("AdminDb")));
+builder.Services.AddDbContext<ReservationsData.ReservationDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("ReservationsDb")));
+builder.Services.AddDbContext<FollowData.FollowDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("FollowDb")));
+builder.Services.AddDbContext<PostInterestData.PostInterestDbContext>(o =>
+    o.UseNpgsql(builder.Configuration.GetConnectionString("PostInterestDb")));
 
 // ── Identity feature services ──────────────────────────────────────────────
 builder.Services.AddScoped<IdentityServices.IPasswordHasher, IdentityServices.PasswordHasher>();
@@ -125,6 +138,23 @@ builder.Services.AddScoped<AdminServices.IAdminModerationService, AdminServices.
 builder.Services.AddScoped<AdminServices.IAdminPointsService, AdminServices.AdminPointsService>();
 builder.Services.AddScoped<AdminServices.IAdminBroadcastService, AdminServices.AdminBroadcastService>();
 builder.Services.AddScoped<AdminServices.IAdminAuditReader, AdminServices.AdminAuditReader>();
+
+// ── Reservations (grab / reserve holds) ───────────────────────────────
+builder.Services.AddScoped<ReservationsServices.ICurrentActor, ReservationsServices.CurrentActor>();
+builder.Services.AddScoped<ReservationsServices.IReservationPoints, ReservationsServices.PointsReservationAdapter>();
+builder.Services.AddScoped<ReservationsServices.IReservationService, ReservationsServices.ReservationService>();
+builder.Services.AddHostedService<ReservationsServices.ReservationExpiryWorker>();
+
+// ── Follow (users following merchants) ─────────────────────────────
+builder.Services.AddScoped<FollowServices.ICurrentActor, FollowServices.CurrentActor>();
+builder.Services.AddScoped<FollowServices.IFollowService, FollowServices.FollowService>();
+
+// ── Post interest (event "I'm interested") ─────────────────────────
+builder.Services.AddScoped<PostInterestServices.ICurrentActor, PostInterestServices.CurrentActor>();
+builder.Services.AddScoped<PostInterestServices.IPostInterestService, PostInterestServices.PostInterestService>();
+
+// ── User activity (read-only aggregation over the feed) ────────────────
+builder.Services.AddScoped<UserActivityServices.IUserActivityService, UserActivityServices.UserActivityService>();
 
 // ── JWT bearer + policies (one auth setup for the whole app) ───────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -218,6 +248,9 @@ using (var scope = app.Services.CreateScope())
     scope.ServiceProvider.GetRequiredService<NotificationsData.NotificationsDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<AwardsData.AwardsDbContext>().Database.Migrate();
     scope.ServiceProvider.GetRequiredService<AdminData.AdminDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<ReservationsData.ReservationDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<FollowData.FollowDbContext>().Database.Migrate();
+    scope.ServiceProvider.GetRequiredService<PostInterestData.PostInterestDbContext>().Database.Migrate();
 }
 
 app.UseSwagger();
