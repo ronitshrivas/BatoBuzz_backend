@@ -18,6 +18,11 @@ jobs:
           script: |
             set -e
             cd ~/batobuzz
-            git pull origin main
+            # Force the VM checkout to match origin/main. The VM is a pure deploy
+            # target - never hand-edit tracked files on it, or the change is lost
+            # here. (A plain `git pull` aborts when a tracked file was edited on
+            # the VM, which has broken this deploy repeatedly.)
+            git fetch origin main
+            git reset --hard origin/main
             docker compose -f docker-compose.prod.yml up -d --build
             docker image prune -f
