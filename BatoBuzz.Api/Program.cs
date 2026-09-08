@@ -213,6 +213,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(o =>
 {
     o.SwaggerDoc("v1", new OpenApiInfo { Title = "BatoBuzz API", Version = "v1" });
+    // Two features can legitimately define same-named DTOs (e.g. Admin and
+    // Merchant both have a ReviewMerchantRequest / MerchantProfileDto). Swagger
+    // keys schemas by short type name and 500s on a clash, so key by full name.
+    o.CustomSchemaIds(t => t.FullName!.Replace("+", "."));
     o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
